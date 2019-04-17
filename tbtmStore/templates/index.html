@@ -1,0 +1,53 @@
+<html>
+<head>
+    <title>APIParse</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}"/>
+</head>
+<body>
+<div class="container" style="width: 88%;">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="/" data-toggle="tab">商品id</a></li>
+    </ul>
+    <div style="clear:both;">
+        <form action="/" method="post">
+            <div class="input-group" style="width: 30%">
+            <textarea type="text" class="form-control" name="goods_id" height="128"
+                      placeholder="请输入需要查找的id，按行划分"></textarea>
+                <button type="submit" class="btn btn-info btn-search">查找</button>
+            </div>
+        </form>
+        <a href="/download">download</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>图片</th>
+            <th>id</th>
+            <th>skuId</th>
+            <th>名字</th>
+            <th>尺码</th>
+            <th>颜色</th>
+            <th>价格</th>
+            <th>库存</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {%for dict in dictList%}
+        <tr>
+            <th><a href="{{ dict['image'] }}" target="_blank"><img src="{{ dict['image'] }}" alt="" height="60" width="60"/></a></th>
+            <th>{{ dict['id'] }}</th>
+            <th>{{ dict['skuId'] }}</th>
+            <th>{{ dict['名字'] }}</th>
+            <th>{{ dict['尺码'] }}</th>
+            <th>{{ dict['颜色'] }}</th>
+            <th>{{ dict['价格'] }}</th>
+            <th>{{ dict['库存'] }}</th>
+        </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
