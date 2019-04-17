@@ -4,23 +4,23 @@
 
 该代码在 `python` 运行后，出现如下显示框：
 
-![image](https://github.com/TTyb/WechatPublic/tbtmStore/image/20190417213809.png)
+![](https://github.com/TTyb/WechatPublic/blob/master/tbtmStore/image/20190417213809.png)
 
 在浏览器里面打开网址：[127.0.0.1:5000](127.0.0.1:5000) 显示如下页面：
 
-![image](https://github.com/TTyb/WechatPublic/tbtmStore/image/20190417214141.png)
+![](https://github.com/TTyb/WechatPublic/blob/master/tbtmStore/image/20190417214141.png)
 
 在输入框里面输入商品的 `id` 即可：
 
-![image](https://github.com/TTyb/WechatPublic/tbtmStore/image/20190417214401.png)
+![](https://github.com/TTyb/WechatPublic/blob/master/tbtmStore/image/20190417214401.png)
 
 `id` 的来源为搜索淘宝的商品关键词后，点击进入详情页，可以在 `url` 中看到所需要的商品的 `id` 。例如搜索关键词 **女装**，点击其中一个进入页面：
 
-![image](https://github.com/TTyb/WechatPublic/tbtmStore/image/20190417214616.png)
+![](https://github.com/TTyb/WechatPublic/blob/master/tbtmStore/image/20190417214616.png)
 
 新页面的 `url` 中的 `id` 即为商品唯一的 `id` ：
 
-![image](https://github.com/TTyb/WechatPublic/tbtmStore/image/20190417214804.png)
+![](https://github.com/TTyb/WechatPublic/blob/master/tbtmStore/image/20190417214804.png)
 
 即 `url` 中的 `id=586378509246`
 
