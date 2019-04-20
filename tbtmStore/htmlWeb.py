@@ -25,7 +25,7 @@ def getHtmlJson(id):
           r'&sign=ef22a6dc765bd6ce86d36e2ba9a6cc33&api=mtop.taobao.detail.getdetail&v=6.0&dataType=jsonp&ttid=2017' \
           r'%40taobao_h5_6.6.0&AntiCreep=true&type=jsonp&callback=mtopjsonp2&data=%7B%22itemNumId%22%3A%22' + str(
         id) + r'%22%7D '
-
+    # print(url)
     r = session.get(url=url, headers=headers)
     html = r.text
     start = html.find('(')
@@ -34,11 +34,9 @@ def getHtmlJson(id):
     #----------------------------------
     # 商品名
     title = datas['item']['title']
-    skus=datas['skuBase']['skus']
-    props=datas['skuBase']['props']
-
     # 商品现有价格和库存
     skuCore = json.loads(datas['apiStack'][0]['value'])['skuCore']['sku2info']
+
     for skuId in skuCore.keys():
         if skuId != '0':
             result_dict = {}
@@ -51,6 +49,8 @@ def getHtmlJson(id):
             result_dict["库存"] = quantity
 
             try:
+                skus = datas['skuBase']['skus']
+                props = datas['skuBase']['props']
                 for item in skus:
                     if skuId==item["skuId"]:
                         propPath = item["propPath"].split(";")
@@ -72,7 +72,25 @@ def getHtmlJson(id):
                 result_dict["name"] = ""
                 result_dict["image"] = ""
             result_arr.append(result_dict)
-
+        elif skuId == '0':
+            result_dict = {}
+            price = skuCore[skuId]['price']['priceText']
+            quantity = skuCore[skuId]['quantity']
+            result_dict["id"] = id
+            result_dict["skuId"] = skuId
+            result_dict["名字"] = title
+            result_dict["价格"] = price
+            result_dict["库存"] = quantity
+            result_dict["规格"]=""
+            try:
+                image = datas['item']['images'][0]
+                result_dict["image"] = image
+            except Exception as e:
+                print(e)
+                result_dict["name"] = ""
+                result_dict["image"] = ""
+                result_dict["规格"] = ""
+            result_arr.append(result_dict)
     return result_arr
 
 
@@ -116,15 +134,17 @@ def home():
 
     elif request.method == 'POST':
         input_id = request.form["goods_id"]
-        with open("id","w",encoding="utf-8") as f:
-            f.write(input_id)
-        f.close()
-        for i_id in input_id.split("\n"):
-            # dictList.append(getHtmlJson(i_id))
-            dictList += getHtmlJson(i_id)
-            time.sleep(1)
-        return render_template("index.html", dictList=dictList)
-
+        if len(input_id) > 0:
+            with open("id","w",encoding="utf-8") as f:
+                f.write(input_id)
+            f.close()
+            for i_id in input_id.split("\n"):
+                # dictList.append(getHtmlJson(i_id))
+                dictList += getHtmlJson(i_id)
+                time.sleep(1)
+            return render_template("index.html", dictList=dictList)
+        else:
+            return render_template("index.html", dictList=dictList)
 
 from flask import make_response
 @app.route('/download', methods=['GET'])
@@ -133,7 +153,7 @@ def download():
     response = create_workbook()
     response.headers['Content-Type'] = "utf-8"
     response.headers["Cache-Control"] = "no-cache"
-    response.headers["Content-Disposition"] = "attachment; filename=download.xlsx"
+    response.headers["Content-Disposition"] = "attachment; filename=download+"+ str(int(time.time())) +".xlsx"
     return response
 
 if __name__ == "__main__":
