@@ -36,7 +36,6 @@ def getHtmlJson(id):
     skus=datas['skuBase']['skus']
     props=datas['skuBase']['props']
 
-
     # 商品现有价格和库存
     skuCore = json.loads(datas['apiStack'][0]['value'])['skuCore']['sku2info']
     for skuId in skuCore.keys():
@@ -49,21 +48,28 @@ def getHtmlJson(id):
             result_dict["名字"] = title
             result_dict["价格"] = price
             result_dict["库存"] = quantity
-            for item in skus:
-                if skuId==item["skuId"]:
-                    propPath = item["propPath"].split(";")
-                    size_id = propPath[0].split(":")
-                    colour_id = propPath[1].split(":")
-                    for itm in props:
-                        if size_id[0]==itm["pid"]:
-                            for it in itm["values"]:
-                                if size_id[1]==it["vid"]:
-                                    result_dict[itm["name"]] = it["name"]
-                        elif colour_id[0]==itm["pid"]:
-                            for it in itm["values"]:
-                                if colour_id[1] == it["vid"]:
-                                    result_dict[itm["name"]] = it["name"]
-                                    result_dict["image"] = "https:" + it["image"]
+
+            try:
+                for item in skus:
+                    if skuId==item["skuId"]:
+                        propPath = item["propPath"].split(";")
+                        size_id = propPath[0].split(":")
+                        colour_id = propPath[-1].split(":")
+                        for itm in props:
+                            if size_id[0]==itm["pid"]:
+                                for it in itm["values"]:
+                                    if size_id[1]==it["vid"]:
+                                        result_dict[itm["name"]] = it["name"]
+                                        result_dict["image"] = "https:" + it["image"]
+                            elif colour_id[0]==itm["pid"]:
+                                for it in itm["values"]:
+                                    if colour_id[1] == it["vid"]:
+                                        result_dict[itm["name"]] = it["name"]
+                                        result_dict["image"] = "https:" + it["image"]
+            except Exception as e:
+                print(e)
+                result_dict["name"] = ""
+                result_dict["image"] = ""
             result_arr.append(result_dict)
 
     return result_arr
