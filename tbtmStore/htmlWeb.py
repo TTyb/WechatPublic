@@ -4,6 +4,7 @@
 from flask import Flask, request, render_template
 import json
 import requests
+import urllib.request as ru
 
 
 def getHtmlJson(id):
@@ -24,7 +25,7 @@ def getHtmlJson(id):
           r'&sign=ef22a6dc765bd6ce86d36e2ba9a6cc33&api=mtop.taobao.detail.getdetail&v=6.0&dataType=jsonp&ttid=2017' \
           r'%40taobao_h5_6.6.0&AntiCreep=true&type=jsonp&callback=mtopjsonp2&data=%7B%22itemNumId%22%3A%22' + str(
         id) + r'%22%7D '
-    # print(url)
+
     r = session.get(url=url, headers=headers)
     html = r.text
     start = html.find('(')
@@ -54,18 +55,18 @@ def getHtmlJson(id):
                     if skuId==item["skuId"]:
                         propPath = item["propPath"].split(";")
                         size_id = propPath[0].split(":")
-                        colour_id = propPath[-1].split(":")
+                        # colour_id = propPath[-1].split(":")
                         for itm in props:
                             if size_id[0]==itm["pid"]:
                                 for it in itm["values"]:
-                                    if size_id[1]==it["vid"]:
-                                        result_dict[itm["name"]] = it["name"]
+                                    if str(size_id[1])==it["vid"]:
+                                        result_dict["规格"] = it["name"]
                                         result_dict["image"] = "https:" + it["image"]
-                            elif colour_id[0]==itm["pid"]:
-                                for it in itm["values"]:
-                                    if colour_id[1] == it["vid"]:
-                                        result_dict[itm["name"]] = it["name"]
-                                        result_dict["image"] = "https:" + it["image"]
+                            # elif colour_id[0]==itm["pid"]:
+                            #     for it in itm["values"]:
+                            #         if colour_id[1] == it["vid"]:
+                            #             result_dict[itm["name"]] = it["name"]
+                            #             result_dict["image"] = "https:" + it["image"]
             except Exception as e:
                 print(e)
                 result_dict["name"] = ""
@@ -85,18 +86,20 @@ def create_workbook():
     # 设置Sheet的名字为download
     worksheet = workbook.add_worksheet('download')
     # 列首
-    title = ["图片","id","skuId","名字","尺码","颜色","价格","库存"]
+    title = ["图片","id","skuId","名字","规格","价格","库存"]
     worksheet.write_row('A1', title)
-    dictList = getHtmlJson(id)
+    dictList = []
+    file = open("id","r",encoding="utf-8")
+    for i_id in file.read().split("\n"):
+        dictList += getHtmlJson(i_id)
     for i in range(len(dictList)):
-        row = [dictList[i]["id"],dictList[i]["skuId"],dictList[i]["名字"],dictList[i]["尺码"],dictList[i]["颜色"],dictList[i]["价格"],dictList[i]["库存"]]
-        worksheet.write_row('B' + str(i + 2), row)
-        # 缓存图片
-        image_data = BytesIO(request.urlopen(dictList[i]["image"]).read())
-        # 插入图片
-        worksheet.insert_image('B' + str(i + 1), dictList[i]["image"], {'image_data': image_data})
+        row = [dictList[i]["image"],dictList[i]["id"],dictList[i]["skuId"],dictList[i]["名字"],dictList[i]["规格"],dictList[i]["价格"],dictList[i]["库存"]]
+        worksheet.write_row('A' + str(i + 2), row)
+        # # 缓存图片
+        # image_data = BytesIO(ru.urlopen(dictList[i]["image"]).read())
+        # # 插入图片
+        # worksheet.insert_image('B' + str(i + 1), dictList[i]["image"], {'image_data': image_data})
         i += 1
-        time.sleep(2)
     workbook.close()
     response = make_response(output.getvalue())
     output.close()
@@ -113,9 +116,13 @@ def home():
 
     elif request.method == 'POST':
         input_id = request.form["goods_id"]
+        with open("id","w",encoding="utf-8") as f:
+            f.write(input_id)
+        f.close()
         for i_id in input_id.split("\n"):
             # dictList.append(getHtmlJson(i_id))
             dictList += getHtmlJson(i_id)
+            time.sleep(1)
         return render_template("index.html", dictList=dictList)
 
 
