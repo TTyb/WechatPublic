@@ -4,9 +4,17 @@
 from flask import Flask, request, render_template
 import json
 import requests
-import urllib.request as ru
 
-
+"""
+589215495706
+570682278295
+586919663297
+571024818873
+581663957867
+581847174467
+550322812402
+586891669550
+"""
 def getHtmlJson(id):
     result_arr = []
     headers = {
@@ -55,21 +63,25 @@ def getHtmlJson(id):
                     if skuId==item["skuId"]:
                         propPath = item["propPath"].split(";")
                         size_id = propPath[0].split(":")
-                        # colour_id = propPath[-1].split(":")
                         for itm in props:
                             if size_id[0]==itm["pid"]:
                                 for it in itm["values"]:
                                     if str(size_id[1])==it["vid"]:
                                         result_dict["规格"] = it["name"]
-                                        result_dict["image"] = "https:" + it["image"]
-                            # elif colour_id[0]==itm["pid"]:
-                            #     for it in itm["values"]:
-                            #         if colour_id[1] == it["vid"]:
-                            #             result_dict[itm["name"]] = it["name"]
-                            #             result_dict["image"] = "https:" + it["image"]
+                                        result_dict["分类"] = ""
+                                        if len(propPath) == 1:
+                                            result_dict["image"] = "https:" + it["image"]
+                            if len(propPath) >= 2:
+                                colour_id = propPath[-1].split(":")
+                                if colour_id[0]==itm["pid"]:
+                                    for it in itm["values"]:
+                                        if colour_id[1] == it["vid"]:
+                                            result_dict["分类"] = it["name"]
+                                            result_dict["image"] = "https:" + it["image"]
             except Exception as e:
                 print(e)
-                result_dict["name"] = ""
+                result_dict["规格"] = ""
+                result_dict["分类"] = ""
                 result_dict["image"] = ""
             result_arr.append(result_dict)
         elif skuId == '0':
@@ -82,6 +94,7 @@ def getHtmlJson(id):
             result_dict["价格"] = price
             result_dict["库存"] = quantity
             result_dict["规格"]=""
+            result_dict["分类"]=""
             try:
                 image = datas['item']['images'][0]
                 result_dict["image"] = image
@@ -90,6 +103,7 @@ def getHtmlJson(id):
                 result_dict["name"] = ""
                 result_dict["image"] = ""
                 result_dict["规格"] = ""
+                result_dict["分类"] = ""
             result_arr.append(result_dict)
     return result_arr
 
@@ -104,14 +118,14 @@ def create_workbook():
     # 设置Sheet的名字为download
     worksheet = workbook.add_worksheet('download')
     # 列首
-    title = ["图片","id","skuId","名字","规格","价格","库存"]
+    title = ["图片","id","skuId","名字","规格","分类","价格","库存"]
     worksheet.write_row('A1', title)
     dictList = []
     file = open("id","r",encoding="utf-8")
-    for i_id in file.read().split("\n"):
+    for i_id in file.read().strip().split("\n"):
         dictList += getHtmlJson(i_id)
     for i in range(len(dictList)):
-        row = [dictList[i]["image"],dictList[i]["id"],dictList[i]["skuId"],dictList[i]["名字"],dictList[i]["规格"],dictList[i]["价格"],dictList[i]["库存"]]
+        row = [dictList[i]["image"],dictList[i]["id"],dictList[i]["skuId"],dictList[i]["名字"],dictList[i]["规格"],dictList[i]["分类"],dictList[i]["价格"],dictList[i]["库存"]]
         worksheet.write_row('A' + str(i + 2), row)
         # # 缓存图片
         # image_data = BytesIO(ru.urlopen(dictList[i]["image"]).read())
@@ -136,9 +150,9 @@ def home():
         input_id = request.form["goods_id"]
         if len(input_id) > 0:
             with open("id","w",encoding="utf-8") as f:
-                f.write(input_id)
+                f.write(input_id.strip().replace("\n",""))
             f.close()
-            for i_id in input_id.split("\n"):
+            for i_id in input_id.strip().split("\n"):
                 # dictList.append(getHtmlJson(i_id))
                 dictList += getHtmlJson(i_id)
                 time.sleep(1)
@@ -153,7 +167,7 @@ def download():
     response = create_workbook()
     response.headers['Content-Type'] = "utf-8"
     response.headers["Cache-Control"] = "no-cache"
-    response.headers["Content-Disposition"] = "attachment; filename=download+"+ str(int(time.time())) +".xlsx"
+    response.headers["Content-Disposition"] = "attachment; filename=download"+ str(int(time.time())) +".xlsx"
     return response
 
 if __name__ == "__main__":
