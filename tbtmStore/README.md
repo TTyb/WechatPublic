@@ -25,3 +25,9 @@
 即 `url` 中的 `id=586378509246`
 
 [https://item.taobao.com/item.htm?id=586378509246&ali_refid=a3_430673_1006:1123737596:N:emtiAWsF8%2Bzhhxaiwzc0Aw%3D%3D:a9425d62eed7f452bd2b9a40bf378589&ali_trackid=1_a9425d62eed7f452bd2b9a40bf378589&spm=a2e15.8261149.07626516002.22](https://item.taobao.com/item.htm?id=586378509246&ali_refid=a3_430673_1006:1123737596:N:emtiAWsF8%2Bzhhxaiwzc0Aw%3D%3D:a9425d62eed7f452bd2b9a40bf378589&ali_trackid=1_a9425d62eed7f452bd2b9a40bf378589&spm=a2e15.8261149.07626516002.22)
+
+备注：
+有任何问题可以在公众号中的 【爬虫需求】 推文中向作者提问
+点【在看】和【打赏】能更快让作者知道你的着急哦
+
+![](https://www.tybai.com/static/jpg/follow.jpg)
