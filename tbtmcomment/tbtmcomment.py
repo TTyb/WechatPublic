@@ -63,9 +63,29 @@ def getCommentByCookie(resource_id):
     except Exception as e:
         print(e)
 
-# 获取评论，不携带cookie
+# 获取评论，不携带cookie，此方法
 def getComment(resource_id):
-    pass
+    url = "https://rate.taobao.com/feedRateList.htm?auctionNumId=" + resource_id + "&currentPageNum=10&pageSize=20"
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3',
+        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0'
+    }
+    session.headers = headers
+
+    r = session.head(url=url, allow_redirects=True)
+    print(r.headers)
+    print(r.status_code)
+    print(r.history)
+
+    html_set_cookie = requests.utils.dict_from_cookiejar(session.cookies)
+    r = session.get(url=url,cookies=html_set_cookie)
+    print(r.request.headers)
+    print(r.text)
+
+
 
 def getJsonData(page, keyword):
     for item in range(0, page):
@@ -73,7 +93,7 @@ def getJsonData(page, keyword):
         for item in datas:
             resource_id = item["RESOURCEID"]
             getCommentByCookie(resource_id)
-
+            #getComment(resource_id)
 
 if __name__ == "__main__":
     page = 10
