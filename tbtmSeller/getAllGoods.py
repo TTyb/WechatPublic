@@ -10,7 +10,7 @@ from GetCookie import *
 session = requests.session()
 
 
-def getJson(shop_id, page):
+def getJson(shop_name,shop_id, page):
     headers = {
         'accept': '*/*',
         'accept-encoding': 'gzip, deflate, br',
@@ -21,7 +21,7 @@ def getJson(shop_id, page):
         'host': 'ruiducp.m.tmall.com'
     }
     num = str(random.randint(83739921, 87739530))
-    url = "https://ruiducp.m.tmall.com/shop/shop_auction_search.do?spm=a2141.7631565.0.0.496714bbs5vOWO&sort=s&p="+str(page)+"&page_size=12&from=h5&&shop_id="+shop_id+"ajson=1&_tm_source=tmallsearch&callback=jsonp_" + num
+    url = "https://"+str(shop_name)+".m.tmall.com/shop/shop_auction_search.do?spm=a2141.7631565.0.0.496714bbs5vOWO&sort=s&p="+str(page)+"&page_size=12&from=h5&&shop_id="+shop_id+"ajson=1&_tm_source=tmallsearch&callback=jsonp_" + num
     cookie = getAllCookies(shop_id,session)
     r = session.get(url, headers=headers, cookies=cookie)
     html = r.text
@@ -33,15 +33,14 @@ def writeJson(html,page):
     start = html.find('(')
     resultJson[str(page)] = json.loads(html[start + 1:-1])
     print(resultJson)
-
     file = open("./json", "a", encoding="utf-8")
     file.write(str(resultJson) + "\n")
     file.close()
 
 
-def getAllPage(shop_id):
+def getAllPage(shop_name,shop_id):
     # 获取总页数
-    html=getJson(shop_id, 1)
+    html=getJson(shop_name,shop_id, 1)
     start = html.find('(')
     total_page = int((json.loads(html[start + 1:-1]))['total_page'])
     # 写入本地
@@ -49,14 +48,16 @@ def getAllPage(shop_id):
 
     # 实现循环抓取
     for i in range(2, total_page + 1):
-        range_html = getJson(shop_id,i)
+        range_html = getJson(shop_name,shop_id,i)
         # 写入本地
         writeJson(range_html, i)
         time.sleep(random.randint(2, 4))
 
 def main():
+    # 输入店铺名和店铺的id
+    shop_name="ruiducp"
     shop_id = "381682363"
-    getAllPage(shop_id)
+    getAllPage(shop_name,shop_id)
 
 
 if __name__ == '__main__':
