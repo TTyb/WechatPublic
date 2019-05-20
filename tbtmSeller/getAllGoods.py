@@ -15,14 +15,16 @@ def getJson(shop_name,shop_id, page):
         'accept': '*/*',
         'accept-encoding': 'gzip, deflate, br',
         'accept-language': 'zh-CN,zh;q=0.9',
-        'referer': 'https://ruiducp.m.tmall.com/shop/shop_auction_search.htm?&shop_id=' + shop_id + '&sort=default',
+        'referer': 'https://'+str(shop_name)+'.m.tmall.com/shop/shop_auction_search.htm?&sort=default',
+        #'referer': 'https://'+str(shop_name)+'.m.tmall.com/shop/shop_auction_search.htm?&shop_id=' + shop_id + '&sort=default',
         'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) '
                       'Chrome/%s Mobile Safari/537.36',
-        'host': 'ruiducp.m.tmall.com'
+        'host': str(shop_name)+'.m.tmall.com'
     }
     num = str(random.randint(83739921, 87739530))
-    url = "https://"+str(shop_name)+".m.tmall.com/shop/shop_auction_search.do?spm=a2141.7631565.0.0.496714bbs5vOWO&sort=s&p="+str(page)+"&page_size=12&from=h5&&shop_id="+shop_id+"ajson=1&_tm_source=tmallsearch&callback=jsonp_" + num
-    cookie = getAllCookies(shop_id,session)
+    url = "https://"+str(shop_name)+".m.tmall.com/shop/shop_auction_search.do?spm=a2141.7631565.0.0.496714bbs5vOWO&sort=s&p="+str(page)+"&page_size=12&from=h5&ajson=1&_tm_source=tmallsearch&callback=jsonp_" + num
+    #url = "https://"+str(shop_name)+".m.tmall.com/shop/shop_auction_search.do?spm=a2141.7631565.0.0.496714bbs5vOWO&sort=s&p="+str(page)+"&page_size=12&from=h5&shop_id="+shop_id+"&ajson=1&_tm_source=tmallsearch&callback=jsonp_" + num
+    cookie = getAllCookies(shop_name,shop_id,session)
     r = session.get(url, headers=headers, cookies=cookie)
     html = r.text
     return html

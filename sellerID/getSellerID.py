@@ -11,8 +11,7 @@ header = {
     'accept-encoding': 'gzip, deflate, br',
     'accept-language': 'zh-CN,zh;q=0.9',
     'referer': 'https://uland.taobao.com/sem/tbsearch?refpid=mm_26632258_3504122_32538762&clk1=099d87ed80b8f819245aee821810d220&keyword=%E7%BE%8E%E9%A3%9F&page=0',
-    'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) '
-                  'Chrome/%s Mobile Safari/537.36',
+    'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
     'host': 'h5api.m.taobao.com'
 }
 
@@ -55,14 +54,16 @@ def main():
     itemsArray = []
     page = 15
     for i in range(1,page):
-    # data = '{"m":"shopitemsearch","vm":"nw","sversion":"4.6","shopId":"58914592","sellerId":"114872995","style":"wf","page":"1","sort":"_coefp","catmap":"","wirelessShopCategoryList":""}'
+        # data = '{"m":"shopitemsearch","vm":"nw","sversion":"4.6","shopId":"58914592","sellerId":"114872995","style":"wf","page":"1","sort":"_coefp","catmap":"","wirelessShopCategoryList":""}'
         print(i)
         data = '{"m":"shopitemsearch","vm":"nw","sversion":"4.6","shopId":"58914592","sellerId":"114872995","style":"wf","page":"'+str(i)+'","sort":"_coefp","catmap":"","wirelessShopCategoryList":""}'
         # 每页都要重新生成 sign
         sign, t = get_sign(data)
         base_url = "https://h5api.m.taobao.com/h5/mtop.taobao.wsearch.appsearch/1.0/?jsv=2.4.5&appKey=12574478&t=" + t + "&sign=" + sign + "&api=mtop.taobao.wsearch.appSearch&v=1.0&H5Request=true&preventFallback=true&type=jsonp&dataType=jsonp&callback=mtopjsonp6&data="
         request_url = base_url + data
+        print(request_url)
         response_json=session.get(request_url, headers=header).content.decode("utf-8","ignore")
+        print(response_json)
         itemsArray = itemsArray+get_itemsArray(response_json)
         time.sleep(1)
     print(itemsArray)
