@@ -47,7 +47,7 @@ def getAllCookies(shop_name,shop_id,session):
     Cookie2_t_token = get_Cookie2_t_token(shop_name,shop_id,session)
     m_h5_tk = get_m_h5_tk(shop_name,shop_id,session)
 
-    cookie = {'isg': 'BEJCODheqsbMmraaY3R3Z_hKkEikE0Yt5dLdFIxbbrVg3-JZdKOWPchZix0GlL7F',
+    cookie = {'isg': 'BLCw7c-nmEVcK0RBYGON1IbJgn4C-ZRDqxgPAqoBfIveZVAPUglk0wYTuaugbkwb',
               'enc': m_h5_tk["enc"],
               't': Cookie2_t_token["t"], '_tb_token_': Cookie2_t_token["_tb_token_"],
               "cookie2": Cookie2_t_token["cookie2"], '_m_h5_tk_enc': m_h5_tk["_m_h5_tk_enc"],
